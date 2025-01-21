@@ -1,5 +1,5 @@
 # start from a debian image base
-FROM debian:buster
+FROM debian:bullseye
 
 # update and install packages
 RUN apt-get update -y && \

@@ -1,19 +1,16 @@
 # start from a debian image base
-FROM debian:buster
+FROM debian:bullseye
 
 # update and install packages
 RUN apt-get update -y && \
 	apt-get install -y nginx openssl && \
 	rm -rf /var/lib/apt/lists/*
 
-# create directory for SSL certificates
-RUN mkdir -p /etc/nginx/ssl
-
 # generate self-signed SSL certificates and key
-RUN openssl req -x500 -nodes -days 365 \
-		-out /etc/nginx/ssl/tanota.crt \
-		-keyout /etc/nginx/ssl/tanota.key \
-		-subj "/C=FR/ST=Paris/L=Paris/O=42/OU=tanota/CN=tanota/"
+RUN mkdir -p /etc/nginx/ssl && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt \
+    -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=tanota.42.fr/UID=tanota"
 
 # copy the conf file inside nginx
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf

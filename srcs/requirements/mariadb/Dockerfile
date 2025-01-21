@@ -1,5 +1,5 @@
 # start from a debian image base
-FROM debian:buster
+FROM debian:bullseye
 
 ARG MYSQL_USER
 ARG MYSQL_PASSWORD

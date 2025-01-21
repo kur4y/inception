@@ -60,13 +60,13 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/ty/data/wordpress
+      device: /home/tyron/data/wordpress
   mariadb:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/ty/data/mariadb
+      device: /home/tyron/data/mariadb
 
 networks:
   inception:

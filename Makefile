@@ -1,6 +1,6 @@
 all:
-		mkdir -p /home/ty/data/mariadb
-		mkdir -p /home/ty/data/wordpress
+		mkdir -p /home/tyron/data/mariadb
+		mkdir -p /home/tyron/data/wordpress
 		docker compose -f ./srcs/docker-compose.yml up --build -d
 
 down:
@@ -22,7 +22,7 @@ clean:
 
 fclean: clean
 		docker rmi wordpress mariadb nginx
-		@sudo rm -rf /home/ty/data/mariadb /home/ty/data/wordpress
+		@sudo rm -rf /home/tyron/data/mariadb /home/tyron/data/wordpress
 		@docker system prune -af
 
 re:		fclean all
