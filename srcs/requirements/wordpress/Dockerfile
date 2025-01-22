@@ -3,7 +3,9 @@ FROM debian:bullseye
 
 # update and install packages
 RUN apt-get update -y && \
-	apt-get install -y php php-cgi php-mysql php-fpm php-pdo php-cli php-mbstring && \
+	apt-get upgrade -y && \
+	apt-get install -y wget && \
+	apt-get install -y php7.3 php-fpm php-mysql && \
 	rm -rf /var/lib/apt/lists/*
 
 # download wordpress
@@ -18,12 +20,12 @@ RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.ph
 	chmod +x wp-cli.phar && \
 	mv wp-cli.phar /usr/local/bin/wp
 
-# copy configurations and script
+# copy config file & script to the container
 COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/
-COPY ./conf/script.sh ./
+COPY ./tools/wordpress_script.sh ./
 
-# give rights to execute script and create temporary folder for PHP-FPM's socket files
-RUN chmod +x ./script.sh && mkdir -p /run/php
+# give rights to exec script & create tmp folder for PHP-FPM's socket files
+RUN chmod +x ./wordpress_script.sh && mkdir -p /run/php
 
 # expose port 9000 for php-fpm
 EXPOSE 9000

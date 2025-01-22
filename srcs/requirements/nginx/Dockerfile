@@ -3,7 +3,10 @@ FROM debian:bullseye
 
 # update and install packages
 RUN apt-get update -y && \
-	apt-get install -y nginx openssl && \
+    apt-get upgrade -y && \
+    apt-get install -y vim && \
+	apt-get install -y nginx && \
+    apt-get install -y openssl && \
 	rm -rf /var/lib/apt/lists/*
 
 # generate self-signed SSL certificates and key
@@ -12,7 +15,7 @@ RUN mkdir -p /etc/nginx/ssl && \
     -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt \
     -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=tanota.42.fr/UID=tanota"
 
-# copy the conf file inside nginx
+# copy the config file to the container
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 
 # expose port 443 for HTTPS
