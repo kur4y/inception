@@ -19,36 +19,48 @@ else
 						--dbuser=$SQL_USER \
 						--dbpass=$SQL_PASSWORD \
     					--dbhost=mariadb:3306 \
+<<<<<<< HEAD
 						--path='/var/www/html/wordpress'
+=======
+						--path='/var/www/wordpress'
+>>>>>>> a7753896606ba124ded2234cb475eafc4e3de74b
 
 	sleep 2
 
 	# Fill wordpress first page
-	wp core install --allow-root \
+	wp core install	--allow-root \
+	    			--dbhost=mariadb:3306 \
+					--path='/var/www/wordpress' \
 					--url=${DOMAIN_NAME} \
 					--title=${WP_TITLE} \
 					--admin_user=${WP_ADMIN_LOGIN} \
 					--admin_password=${WP_ADMIN_PASSWORD} \
 					--admin_email=${WP_ADMIN_EMAIL} \
-					--path=${WP_PATH};
+
+	sleep 2
 
 	# Add user1
 	wp user create	--allow-root \
+					--role=author \
 					${WP_USER1_LOGIN} \
 					${WP_USER1_EMAIL} \
 					--user_pass=${WP_USER1_PASSWORD} \
-					--path=${WP_PATH};
+					--path='/var/www/wordpress' >> /log.txt
 
-	# set the site in English & remove default themes/plugins
-	wp language core install en_US --activate
-	wp theme delete twentynineteen twentytwenty
-	wp plugin delete hello
-
-	touch /wordpress_installed
+	sleep 2
 fi
 
+if [ ! -d /run/php ]; then
+    mkdir ./run/php
+fi
+
+<<<<<<< HEAD
 if [ ! -d /run/php ]
 then
     mkdir ./run/php
 fi
 /usr/sbin/php-fpm7.3 -F
+=======
+echo "wordpress is configured"
+/usr/sbin/php-fpm7.4 -F
+>>>>>>> a7753896606ba124ded2234cb475eafc4e3de74b

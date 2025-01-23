@@ -26,5 +26,9 @@ RUN chown -R www-data:www-data /var/www/html
 # expose port 443 for HTTPS
 EXPOSE 443
 
+# give permissions to nginx dir
+RUN chmod 755 /var/www/html
+RUN chown -R www-data:www-data /var/www/html
+
 # run NGINX
 CMD ["nginx", "-g", "daemon off;"]
