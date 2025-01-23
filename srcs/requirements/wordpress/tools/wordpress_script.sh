@@ -3,9 +3,9 @@
 cd /var/www/html/wordpress
 
 # Check if wordpress is already downloaded
-if [ -f /wordpress_installed ]
+if [ -e /var/www/wordpress/wp-config.php ]
 then
-	echo "wordpress already installed"
+	echo "Wordpress already installed"
 	sleep 10
 else
 	echo "Configuring wordpress ..."
@@ -14,11 +14,12 @@ else
 	sleep 30
 
 	# Setup the wp-config.php file
-	sed -i "s/username_here/$MYSQL_USER/g" /var/www/html/wordpress/wp-config-sample.php
-	sed -i "s/password_here/$MYSQL_PASSWORD/g" /var/www/html/wordpress/wp-config-sample.php
-	sed -i "s/localhost/$MYSQL_HOST/g" /var/www/html/wordpress/wp-config-sample.php
-	sed -i "s/database_name_here/$MYSQL_DATABASE/g" /var/www/html/wordpress/wp-config-sample.php
-	mv /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
+    wp config create	--allow-root \
+						--dbname=$SQL_DATABASE \
+						--dbuser=$SQL_USER \
+						--dbpass=$SQL_PASSWORD \
+    					--dbhost=mariadb:3306 \
+						--path='/var/www/html/wordpress'
 
 	sleep 2
 
@@ -46,5 +47,8 @@ else
 	touch /wordpress_installed
 fi
 
-echo "wordpress is configured"
-/usr/sbin/php-fpm7.3 -F -R
+if [ ! -d /run/php ]
+then
+    mkdir ./run/php
+fi
+/usr/sbin/php-fpm7.3 -F

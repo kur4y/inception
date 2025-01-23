@@ -1,7 +1,8 @@
 all:
 		mkdir -p /home/tyron/data/mariadb
 		mkdir -p /home/tyron/data/wordpress
-		docker compose -f ./srcs/docker-compose.yml up --build -d
+		docker compose -f ./srcs/docker-compose.yml build
+		docker compose -f ./srcs/docker-compose.yml up -d
 
 down:
 		docker compose -f ./srcs/docker-compose.yml down
@@ -17,12 +18,14 @@ check:
 		docker images
 
 clean:
-		docker stop wordpress mariadb nginx
-		docker rm wordpress mariadb nginx
+		docker container stop wordpress mariadb nginx
+		docker network rm inception
 
 fclean: clean
-		docker rmi wordpress mariadb nginx
-		@sudo rm -rf /home/tyron/data/mariadb /home/tyron/data/wordpress
+		@sudo rm -rf /home/tyron/data/mariadb/*
+		@sudo rm -rf /home/tyron/data/wordpress/*
 		@docker system prune -af
 
 re:		fclean all
+
+.PHONY: all logs clean fclean
