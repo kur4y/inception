@@ -8,7 +8,7 @@ RUN apt-get update -y && \
 	apt-get install -y php7.3 php-fpm php-mysql && \
 	rm -rf /var/lib/apt/lists/*
 
-# download wordpress
+# download wordpress & give it permissions
 RUN wget http://wordpress.org/wordpress-6.1.1.tar.gz -P /var/www/html && \
 	tar -xvf /var/www/html/wordpress-6.1.1.tar.gz -C /var/www/html && \
 	rm -rf /var/www/html/wordpress-6.1.1.tar.gz && \
@@ -30,4 +30,5 @@ RUN chmod +x ./wordpress_script.sh && mkdir -p /run/php
 # expose port 9000 for php-fpm
 EXPOSE 9000
 
-ENTRYPOINT ["sh", "./script.sh"]
+# exec my wordpress script
+ENTRYPOINT ["sh", "./wordpress_script.sh"]

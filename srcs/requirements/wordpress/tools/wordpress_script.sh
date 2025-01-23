@@ -1,5 +1,7 @@
 #!/bin/sh
 
+cd /var/www/html/wordpress
+
 # Check if wordpress is already downloaded
 if [ -f /wordpress_installed ]
 then
@@ -18,6 +20,8 @@ else
 	sed -i "s/database_name_here/$MYSQL_DATABASE/g" /var/www/html/wordpress/wp-config-sample.php
 	mv /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
 
+	sleep 2
+
 	# Fill wordpress first page
 	wp core install --allow-root \
 					--url=${DOMAIN_NAME} \
@@ -28,14 +32,19 @@ else
 					--path=${WP_PATH};
 
 	# Add user1
-	wp user create --allow-root \
+	wp user create	--allow-root \
 					${WP_USER1_LOGIN} \
 					${WP_USER1_EMAIL} \
 					--user_pass=${WP_USER1_PASSWORD} \
 					--path=${WP_PATH};
 
+	# set the site in English & remove default themes/plugins
+	wp language core install en_US --activate
+	wp theme delete twentynineteen twentytwenty
+	wp plugin delete hello
+
 	touch /wordpress_installed
 fi
 
-echo "wordpress ready"
-/usr/sbin/php-fpm7.3 -F
+echo "wordpress is configured"
+/usr/sbin/php-fpm7.3 -F -R
