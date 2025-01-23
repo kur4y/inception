@@ -3,9 +3,9 @@
 cd /var/www/html/wordpress
 
 # Check if wordpress is already downloaded
-if [ -f /wordpress_installed ]
+if [ -e /var/www/wordpress/wp-config.php ]
 then
-	echo "wordpress already installed"
+	echo "Wordpress already installed"
 	sleep 10
 else
 	echo "Configuring wordpress ..."
@@ -13,38 +13,41 @@ else
 	# Wait for the database to be created correctly
 	sleep 30
 
-	# Setup the wp-config.php file
-	sed -i "s/username_here/$MYSQL_USER/g" /var/www/html/wordpress/wp-config-sample.php
-	sed -i "s/password_here/$MYSQL_PASSWORD/g" /var/www/html/wordpress/wp-config-sample.php
-	sed -i "s/localhost/$MYSQL_HOST/g" /var/www/html/wordpress/wp-config-sample.php
-	sed -i "s/database_name_here/$MYSQL_DATABASE/g" /var/www/html/wordpress/wp-config-sample.php
-	mv /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
+    wp config create	--allow-root \
+						--dbname=$SQL_DATABASE \
+						--dbuser=$SQL_USER \
+						--dbpass=$SQL_PASSWORD \
+    					--dbhost=mariadb:3306 \
+						--path='/var/www/wordpress'
 
 	sleep 2
 
 	# Fill wordpress first page
-	wp core install --allow-root \
+	wp core install	--allow-root \
+	    			--dbhost=mariadb:3306 \
+					--path='/var/www/wordpress' \
 					--url=${DOMAIN_NAME} \
 					--title=${WP_TITLE} \
 					--admin_user=${WP_ADMIN_LOGIN} \
 					--admin_password=${WP_ADMIN_PASSWORD} \
 					--admin_email=${WP_ADMIN_EMAIL} \
-					--path=${WP_PATH};
+
+	sleep 2
 
 	# Add user1
 	wp user create	--allow-root \
+					--role=author \
 					${WP_USER1_LOGIN} \
 					${WP_USER1_EMAIL} \
 					--user_pass=${WP_USER1_PASSWORD} \
-					--path=${WP_PATH};
+					--path='/var/www/wordpress' >> /log.txt
 
-	# set the site in English & remove default themes/plugins
-	wp language core install en_US --activate
-	wp theme delete twentynineteen twentytwenty
-	wp plugin delete hello
+	sleep 2
+fi
 
-	touch /wordpress_installed
+if [ ! -d /run/php ]; then
+    mkdir ./run/php
 fi
 
 echo "wordpress is configured"
-/usr/sbin/php-fpm7.3 -F -R
+/usr/sbin/php-fpm7.4 -F

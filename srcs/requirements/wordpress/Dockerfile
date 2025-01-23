@@ -5,7 +5,7 @@ FROM debian:bullseye
 RUN apt-get update -y && \
 	apt-get upgrade -y && \
 	apt-get install -y wget && \
-	apt-get install -y php7.3 php-fpm php-mysql && \
+	apt-get install -y php7.4 php-fpm php-mysql mariadb-client && \
 	rm -rf /var/lib/apt/lists/*
 
 # download wordpress & give it permissions
@@ -21,8 +21,8 @@ RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.ph
 	mv wp-cli.phar /usr/local/bin/wp
 
 # copy config file & script to the container
-COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/
-COPY ./tools/wordpress_script.sh ./
+COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
+COPY ./tools/wordpress_script.sh /wordpress_script.sh
 
 # give rights to exec script & create tmp folder for PHP-FPM's socket files
 RUN chmod +x ./wordpress_script.sh && mkdir -p /run/php

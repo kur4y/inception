@@ -1,21 +1,15 @@
-version: '3.7'
-
 services:
   mariadb:
     image: mariadb
     container_name: mariadb
-    init: true
     build:
       context: ./requirements/mariadb
       dockerfile: Dockerfile
-      args:
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
     env_file: .env
     volumes:
       - mariadb:/var/lib/mysql
+    expose:
+      - "3306"
     restart: unless-stopped
     networks:
       - inception
@@ -23,23 +17,23 @@ services:
   wordpress:
     image: wordpress
     container_name: wordpress
-    init: true
     build:
       context: ./requirements/wordpress
       dockerfile: Dockerfile
     env_file: .env
     volumes:
       - wordpress:/var/www/html/wordpress
+    expose:
+      - "9000"
     depends_on: 
       - mariadb
-    restart: on-failure
+    restart: unless-stopped
     networks:
       - inception
 
   nginx:
     image: nginx
     container_name: nginx
-    init: true
     build: 
       context: ./requirements/nginx
       dockerfile: Dockerfile
@@ -48,7 +42,7 @@ services:
       - wordpress:/var/www/html/wordpress
     depends_on: 
       - wordpress
-    restart: on-failure
+    restart: unless-stopped
     ports:
       - "443:443"
     networks:
@@ -58,15 +52,15 @@ volumes:
   wordpress:
     driver: local
     driver_opts:
-      o: bind
-      type: none
-      device: /home/tyron/data/wordpress
+      o: 'bind'
+      type: 'none'
+      device: '/home/tyron/data/wordpress'
   mariadb:
     driver: local
     driver_opts:
-      o: bind
-      type: none
-      device: /home/tyron/data/mariadb
+      o: 'bind'
+      type: 'none'
+      device: '/home/tyron/data/mariadb'
 
 networks:
   inception:
