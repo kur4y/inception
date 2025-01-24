@@ -6,8 +6,7 @@ RUN apt-get update -y && \
 	apt-get upgrade -y && \
 	apt-get install -y vim && \
 	apt-get install -y nginx && \
-	apt-get install -y openssl && \
-	rm -rf /var/lib/apt/lists/*
+	apt-get install -y openssl
 
 # generate self-signed SSL certificates and key
 RUN mkdir -p /etc/nginx/ssl && \
@@ -22,9 +21,6 @@ COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 # permissions on dir
 RUN chmod 755 /var/www/html
 RUN chown -R www-data:www-data /var/www/html
-
-# expose port 443 for HTTPS
-EXPOSE 443
 
 # give permissions to nginx dir
 RUN chmod 755 /var/www/html

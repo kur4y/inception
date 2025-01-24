@@ -3,10 +3,10 @@
 cd /var/www/html/wordpress
 
 # Check if wordpress is already downloaded
-if [ -e /var/www/wordpress/wp-config.php ]
+if [ -e /var/www/html/wordpress/wp-config.php ]
 then
 	echo "Wordpress already installed"
-	sleep 10
+
 else
 	echo "Configuring wordpress ..."
 
@@ -19,18 +19,14 @@ else
 						--dbuser=$SQL_USER \
 						--dbpass=$SQL_PASSWORD \
     					--dbhost=mariadb:3306 \
-<<<<<<< HEAD
 						--path='/var/www/html/wordpress'
-=======
-						--path='/var/www/wordpress'
->>>>>>> a7753896606ba124ded2234cb475eafc4e3de74b
 
 	sleep 2
 
 	# Fill wordpress first page
 	wp core install	--allow-root \
 	    			--dbhost=mariadb:3306 \
-					--path='/var/www/wordpress' \
+					--path='/var/www/html/wordpress' \
 					--url=${DOMAIN_NAME} \
 					--title=${WP_TITLE} \
 					--admin_user=${WP_ADMIN_LOGIN} \
@@ -45,22 +41,14 @@ else
 					${WP_USER1_LOGIN} \
 					${WP_USER1_EMAIL} \
 					--user_pass=${WP_USER1_PASSWORD} \
-					--path='/var/www/wordpress' >> /log.txt
-
-	sleep 2
+					--path='/var/www/html/wordpress' >> /log.txt
 fi
 
-if [ ! -d /run/php ]; then
-    mkdir ./run/php
-fi
+sleep 10
 
-<<<<<<< HEAD
 if [ ! -d /run/php ]
 then
     mkdir ./run/php
 fi
-/usr/sbin/php-fpm7.3 -F
-=======
-echo "wordpress is configured"
+
 /usr/sbin/php-fpm7.4 -F
->>>>>>> a7753896606ba124ded2234cb475eafc4e3de74b

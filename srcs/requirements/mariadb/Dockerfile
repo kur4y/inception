@@ -6,8 +6,7 @@ RUN apt-get update -y && \
 	apt-get upgrade -y && \
 	apt-get install -y mariadb-server && \
 	apt-get install -y mariadb-client && \
-	apt-get install -y procps && \
-	rm -rf /var/lib/apt/lists/*
+	apt-get install -y procps
 
 # copy the config file & script to the container
 COPY conf/50-server.cnf	/etc/mysql/mariadb.conf.d/50-server.cnf
